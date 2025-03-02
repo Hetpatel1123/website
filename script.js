@@ -2,6 +2,7 @@
 function signup() {
     let username = document.getElementById("signupUsername").value.trim();
     let password = document.getElementById("signupPassword").value.trim();
+    let signupMsg = document.getElementById("signupMsg");
 
     if (username === "" || password === "") {
         alert("Please fill in both fields.");
@@ -12,8 +13,10 @@ function signup() {
     localStorage.setItem("username", username);
     localStorage.setItem("password", password);
 
-    alert("Signup successful! Please log in.");
-    window.location.href = "login.html"; // Redirect to login page
+    signupMsg.innerText = "Signup successful! Redirecting to login...";
+    setTimeout(() => {
+        window.location.href = "login.html"; // Redirect to login page
+    }, 2000);
 }
 
 // Handle Login
@@ -22,12 +25,13 @@ function login() {
     let enteredPass = document.getElementById("loginPassword").value.trim();
     let storedUser = localStorage.getItem("username");
     let storedPass = localStorage.getItem("password");
+    let errorMsg = document.getElementById("errorMsg");
 
     if (enteredUser === storedUser && enteredPass === storedPass) {
-        sessionStorage.setItem("loggedIn", "true"); // Set login status
+        sessionStorage.setItem("loggedIn", "true"); // Store login state
         window.location.href = "welcome.html"; // Redirect to welcome page
     } else {
-        document.getElementById("errorMsg").innerText = "Invalid Credentials! Please try again.";
+        errorMsg.innerText = "Invalid username or password!";
     }
 }
 
@@ -35,12 +39,14 @@ function login() {
 function checkLogin() {
     if (sessionStorage.getItem("loggedIn") !== "true") {
         window.location.href = "login.html"; // Redirect if not logged in
+    } else {
+        document.getElementById("usernameDisplay").innerText = localStorage.getItem("username");
     }
 }
 
 // Handle Logout
 function logout() {
-    sessionStorage.removeItem("loggedIn"); // Remove login status
+    sessionStorage.removeItem("loggedIn"); // Clear login state
     window.location.href = "exit.html"; // Redirect to exit page
 }
 
