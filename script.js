@@ -1,49 +1,53 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // Signup
-    const signupForm = document.getElementById("signupForm");
-    if (signupForm) {
-        signupForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const newUser = document.getElementById("newUsername").value;
-            const newPass = document.getElementById("newPassword").value;
-            localStorage.setItem("user", newUser);
-            localStorage.setItem("pass", newPass);
-            alert("Signup successful! Please log in.");
-            window.location.href = "index.html";
-        });
+// Handle Signup
+function signup() {
+    let username = document.getElementById("signupUsername").value.trim();
+    let password = document.getElementById("signupPassword").value.trim();
+
+    if (username === "" || password === "") {
+        alert("Please fill in both fields.");
+        return;
     }
 
-    // Login
-    const loginForm = document.getElementById("loginForm");
-    if (loginForm) {
-        loginForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const user = document.getElementById("username").value;
-            const pass = document.getElementById("password").value;
-            const savedUser = localStorage.getItem("user");
-            const savedPass = localStorage.getItem("pass");
+    // Store credentials in localStorage
+    localStorage.setItem("username", username);
+    localStorage.setItem("password", password);
 
-            if (user === savedUser && pass === savedPass) {
-                sessionStorage.setItem("loggedIn", "true");
-                window.location.href = "welcome.html";
-            } else {
-                alert("Invalid credentials!");
-            }
-        });
-    }
+    alert("Signup successful! Please log in.");
+    window.location.href = "login.html"; // Redirect to login page
+}
 
-    // Welcome page
-    if (window.location.pathname.includes("welcome.html")) {
-        const user = localStorage.getItem("user");
-        document.getElementById("user").textContent = user;
-        document.getElementById("logoutBtn").addEventListener("click", () => {
-            sessionStorage.removeItem("loggedIn");
-            window.location.href = "exit.html";
-        });
-    }
+// Handle Login
+function login() {
+    let enteredUser = document.getElementById("loginUsername").value.trim();
+    let enteredPass = document.getElementById("loginPassword").value.trim();
+    let storedUser = localStorage.getItem("username");
+    let storedPass = localStorage.getItem("password");
 
-    // Redirect to login if not logged in
-    if (window.location.pathname.includes("welcome.html") && !sessionStorage.getItem("loggedIn")) {
-        window.location.href = "index.html";
+    if (enteredUser === storedUser && enteredPass === storedPass) {
+        sessionStorage.setItem("loggedIn", "true"); // Set login status
+        window.location.href = "welcome.html"; // Redirect to welcome page
+    } else {
+        document.getElementById("errorMsg").innerText = "Invalid Credentials! Please try again.";
     }
-});
+}
+
+// Ensure User is Logged In before accessing Welcome Page
+function checkLogin() {
+    if (sessionStorage.getItem("loggedIn") !== "true") {
+        window.location.href = "login.html"; // Redirect if not logged in
+    }
+}
+
+// Handle Logout
+function logout() {
+    sessionStorage.removeItem("loggedIn"); // Remove login status
+    window.location.href = "exit.html"; // Redirect to exit page
+}
+
+// Redirect from Exit to Login Page after few seconds
+function exitPage() {
+    setTimeout(() => {
+        window.location.href = "login.html"; // Redirect to login page
+    }, 3000); // 3 seconds delay
+}
+
